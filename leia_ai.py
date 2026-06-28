@@ -10,6 +10,18 @@ from dotenv import load_dotenv
 # Load environment variables from .env
 load_dotenv()
 
+# Base64 image helper for inline logo rendering
+import base64
+def obter_base64_imagem(caminho):
+    try:
+        with open(caminho, "rb") as image_file:
+            return base64.b64encode(image_file.read()).decode('utf-8')
+    except Exception:
+        return ""
+
+logo_base64 = obter_base64_imagem("logo.jpg")
+logo_html_src = f"data:image/jpeg;base64,{logo_base64}" if logo_base64 else ""
+
 # Initialize session state for query input
 if "query_val" not in st.session_state:
     st.session_state.query_val = ""
@@ -303,6 +315,76 @@ div[data-testid="column"] button:hover {
     color: #dbeafe;
     margin-top: 14px;
 }
+
+.hero-logo-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    vertical-align: middle;
+    margin-right: 16px;
+    margin-top: -8px;
+    box-shadow: 0 8px 24px rgba(124,58,237,.35);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 640px) {
+    .hero {
+        padding: 24px !important;
+        border-radius: 20px !important;
+    }
+    .hero h1 {
+        font-size: 2.2rem !important;
+        letter-spacing: -1px !important;
+        display: flex;
+        align-items: center;
+    }
+    .hero-logo-icon {
+        width: 36px !important;
+        height: 36px !important;
+        margin-right: 12px !important;
+        border-radius: 10px !important;
+    }
+    .hero p {
+        font-size: 1rem !important;
+    }
+    .badge {
+        padding: 6px 12px !important;
+        font-size: 0.8rem !important;
+        margin: 8px 4px 0 0 !important;
+    }
+    .metric-card {
+        padding: 16px !important;
+        min-height: 100px !important;
+    }
+    .metric-card h3 {
+        font-size: 1.6rem !important;
+    }
+    .prompt-card {
+        padding: 20px !important;
+    }
+    .prompt-title {
+        font-size: 1.25rem !important;
+    }
+    .book-grid {
+        grid-template-columns: 80px 1fr !important;
+        gap: 12px !important;
+    }
+    .cover {
+        width: 80px !important;
+        height: 120px !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(button) {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        justify-content: flex-start !important;
+        gap: 8px !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(button) div[data-testid="column"] {
+        flex: 0 1 auto !important;
+        width: calc(33.33% - 6px) !important;
+        min-width: 80px !important;
+    }
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -436,10 +518,11 @@ with st.sidebar:
 
 
 # HERO
-st.markdown("""
+logo_src_html = f'<img src="{logo_html_src}" class="hero-logo-icon" />' if logo_html_src else ''
+st.markdown(f"""
 <div class="hero">
     <p class="eyebrow">RECOMENDAÇÕES LITERÁRIAS COM IA</p>
-    <h1>Leia.ai</h1>
+    <h1>{logo_src_html}Leia.ai</h1>
     <p>Livros que combinam com você, explicados por inteligência artificial.</p>
     <div class="badges">
         <span class="badge">IA literária</span>
